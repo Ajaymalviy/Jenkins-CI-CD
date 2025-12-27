@@ -6,7 +6,7 @@ pipeline {
         stage('Clone Code') {
             steps {
                 git branch: 'main',
-                    url: 'git@github.com:Ajaymalviy/Jenkins-CI-CD.git'
+                    url: 'https://github.com/Ajaymalviy/Jenkins-CI-CD.git'
             }
         }
 

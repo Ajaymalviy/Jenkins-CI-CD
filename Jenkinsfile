@@ -1,36 +1,32 @@
 pipeline {
     agent any
-        
+
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('H/2 * * * *')
     }
-    
+
     environment {
         IMAGE_NAME = "html-nginx-app"
         CONTAINER_NAME = "html-nginx-container"
         APP_PORT = "8085"
     }
-    
+
     options {
         timestamps()
         disableConcurrentBuilds()
     }
-    
+
     stages {
 
-        stage('Clone Code') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/Ajaymalviy/Jenkins-CI-CD.git'
+                checkout scm
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
-                sh '''
-                    echo "Building Docker image"
-                    docker build -t $IMAGE_NAME .
-                '''
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
@@ -53,24 +49,14 @@ pipeline {
                 '''
             }
         }
-
-        // stage('Deploy to Nginx') {
-        //     steps {
-        //         sh '''
-        //         echo "Deploying HTML to Nginx"
-        //         sudo rm -rf /var/www/html/*
-        //         sudo cp -r * /var/www/html/
-        //         echo "Deployment done"
-        //         '''
-        //     }
-        // }
     }
-        post {
+
+    post {
         success {
-            echo " Application deployed successfully on Docker"
+            echo "✅ Application deployed successfully on Docker"
         }
         failure {
-            echo " Pipeline failed"
+            echo "❌ Pipeline failed"
         }
         always {
             echo "Pipeline finished"
